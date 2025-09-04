@@ -19,14 +19,29 @@ enum ParsePosNonzeroError {
     ParseInt(ParseIntError),
 }
 
-impl ParsePosNonzeroError {
-    fn from_creation(err: CreationError) -> Self {
-        Self::Creation(err)
-    }
-
-    // TODO: Add another error conversion function here.
-    // fn from_parse_int(???) -> Self { ??? }
+macro_rules! impl_from {
+    ($from:ty => $to:path:$variant:ident) => {
+        impl From<$from> for $to {
+            fn from(err: $from) -> Self {
+                Self::$variant(err)
+            }
+        }
+    };
 }
+
+impl_from![ParseIntError => ParsePosNonzeroError:ParseInt];
+impl_from![CreationError => ParsePosNonzeroError:Creation];
+// impl From<CreationError> for ParsePosNonzeroError {
+//     fn from(err: CreationError) -> Self {
+//         Self::Creation(err)
+//     }
+// }
+
+// impl From<ParseIntError> for ParsePosNonzeroError {
+//     fn from(err: ParseIntError) -> Self {
+//         Self::ParseInt(err)
+//     }
+// }
 
 #[derive(PartialEq, Debug)]
 struct PositiveNonzeroInteger(u64);
@@ -43,8 +58,15 @@ impl PositiveNonzeroInteger {
     fn parse(s: &str) -> Result<Self, ParsePosNonzeroError> {
         // TODO: change this to return an appropriate error instead of panicking
         // when `parse()` returns an error.
-        let x: i64 = s.parse().unwrap();
-        Self::new(x).map_err(ParsePosNonzeroError::from_creation)
+        let x = s.parse().map_err(|e| {
+            // trace code
+            ParsePosNonzeroError::from(e)
+        })?;
+
+        Self::new(x).map_err(|e| {
+            // trace code
+            ParsePosNonzeroError::from(e)
+        })
     }
 }
 
