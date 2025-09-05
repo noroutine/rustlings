@@ -10,10 +10,21 @@ fn factorial(num: u64) -> u64 {
     // - additional variables
     // For an extra challenge, don't use:
     // - recursion
+    // if num == 0 { 1 } else { (1..=num).product() }
+    // match num {
+    //     0 => 1,
+    //     n => (1..=n).product()
+    // }
+    // (1..=num).fold(1, |acc, x| acc * x)
+
+    (1..=num).product::<u64>()
 }
 
 fn main() {
     // You can optionally experiment here.
+    let num = 0;
+    let range = 1..=num; 
+    println!("{:?}", range.product::<i32>());
 }
 
 #[cfg(test)]
