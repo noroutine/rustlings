@@ -20,11 +20,27 @@ fn main() {
         handles.push(handle);
     }
 
-    let mut results = Vec::new();
-    for handle in handles {
-        // TODO: Collect the results of all threads into the `results` vector.
-        // Use the `JoinHandle` struct which is returned by `thread::spawn`.
-    }
+    // let mut results = Vec::new();
+    // for handle in handles {
+    //     // TODO: Collect the results of all threads into the `results` vector.
+    //     // Use the `JoinHandle` struct which is returned by `thread::spawn`.
+    //     if let Ok(r) = handle.join() {
+    //         results.push(r);
+    //     }
+
+    // }
+
+    // let results: Vec<u128> = handles
+    //     .into_iter()
+    //     .map(|h| h.join())
+    //     .filter(|r| r.is_ok())
+    //     .map(|r| r.unwrap())
+    //     .collect();
+
+    let results: Vec<u128> = handles
+        .into_iter()
+        .filter_map(|h| h.join().ok())
+        .collect();
 
     if results.len() != 10 {
         panic!("Oh no! Some thread isn't done yet!");
